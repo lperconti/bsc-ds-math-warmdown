@@ -1,79 +1,91 @@
 # Gradient Descent and Linear Algebra Review
 
 In this notebook, we review:
-* `learning rate` - a standard hyperparameter for gradient descent algorithms, and evaluate how learning rate impacts a model's fit.
+* Referencing sklearn documentation
+* `learning rate` - a standard hyperparameter for gradient descent algorithms
+    * How learning rate impacts a model's fit.
 * Introductory elements of linear algebra.
-    * Vector compatibility 
-    * 
+    * Vector shape
+    * Dot products
+    * Numpy arrays
+
+In the next cell we import the necessary packages for the notebook and load in a dataset containing information about diatebetes patients. 
+
+**Data Understanding**
+
+The documentation for this dataset provides the following summary:
+
+> *"Ten baseline variables, age, sex, body mass index, average blood
+pressure, and six blood serum measurements were obtained for each of n =
+442 diabetes patients, as well as the response of interest, a
+quantitative measure of disease progression one year after baseline."*
 
 
 ```python
+# Sklearn's gradient descent linear regression model
 from sklearn.linear_model import SGDRegressor
-from sklearn.datasets import load_diabetes
-from sklearn.model_selection import train_test_split
-import pandas as pd
 
+# Pandas and numpy
+import pandas as pd
+import numpy as np
+
+# Train test split
+from sklearn.model_selection import train_test_split
+
+# Load Data
+from sklearn.datasets import load_diabetes
 data = load_diabetes()
 df = pd.DataFrame(data['data'], columns=data['feature_names'])
 df['target'] = data['target']
 
 # Jupyter configuration
 %config Completer.use_jedi = False
+
+df.head(3)
 ```
 
+# Gradient Descent 
+
 ## 1. Set up a train test split
+
+In the cell below, please create a train test split for this dataset, setting `target` as the response variable and all other columns as independent variables.
+* Set the random state to 2021
 
 
 ```python
 # Your code here
-```
-
-
-```python
-#__SOLUTION__
-X = df.drop('target', axis = 1)
-y = df.target
-X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=2021)
 ```
 
 ## 2. Initialize an SGDRegressor model
 
+Now, initialize an `SGDRegressor` model.
+* Set the random state to 2021
+
 
 ```python
 # Your code here
-```
-
-
-```python
-#__SOLUTION__
-model = SGDRegressor(random_state=2021)
 ```
 
 ## 3. Fit the model
 
+In the cell below, fit the model to the training data.
+
 
 ```python
 # Your code here
 ```
 
+At this point in the program, you may have become accustomed to ignoring pink warning messages –– mostly because `pandas` returns many unhelpful warning messages. 
 
-```python
-#__SOLUTION__
-model.fit(X_train, y_train)
-```
+It is important to state that, generally, you should not default to ignoring warning messages. In this case the above pink warning message is quite informative!
 
-    /opt/anaconda3/lib/python3.7/site-packages/sklearn/linear_model/_stochastic_gradient.py:1228: ConvergenceWarning: Maximum number of iteration reached before convergence. Consider increasing max_iter to improve the fit.
-      ConvergenceWarning)
+The above warning message tells us that our model failed to converge. This means that our model did not find the minima of the cost curve, which we usually want! The warning offers the suggestion:
+> *"Consider increasing max_iter to improve the fit."*
 
 
+`max_iter` is an adjustable hyperparameter for the `SGDRegressor` model.
 
-
-
-    SGDRegressor(random_state=2021)
-
-
-
-## 4. Multiple choice question asking them to select what the default setting is for max_iter
+Let's zoom in on this parameter for a second.
 
 
 ```python
@@ -82,32 +94,24 @@ from src.questions import *
 question_4.display()
 ```
 
+## 5. Update the max_iter
 
-    VBox(children=(Output(layout=Layout(bottom='5px', width='auto')), RadioButtons(layout=Layout(flex_flow='column…
-
-
-## 5. Update the max_iter variable to 10000
+In the cell below, initialize a new `SGDRegessor` model with `max_iter` set to 10,000. 
+* Set the random state to 2021
 
 
 ```python
 # Your code here
 ```
 
-
-```python
-#__SOLUTION__
-model = SGDRegressor(max_iter=10000, random_state=2021)
-model.fit(X_train, y_train)
-```
+The model converged! This tells us that the model just needed to run for longer to reach the minima of the cost curve. 
 
 
+But how do you find the necessary number of iterations? 
 
+In the cell below, we have written some code that shows you how to find the required number of iterations programmatically. This code is mostly being provided in case you ever need it, so don't stress if it feels intimidating!
 
-    SGDRegressor(max_iter=10000, random_state=2021)
-
-
-
-# Quick aside about finding the max iter programmatically
+In truth, there is a different hyperparameter we tend to use to help our models converges. 
 
 
 ```python
@@ -134,60 +138,15 @@ for i in range(1000, 10000, 500):
 print('Max iterations needed for convergence:', i)
 ```
 
-    Max iterations needed for convergence: 6500
+### Let's zoom in on the *learning rate*!
 
-
-
-```python
-#__SOLUTION__
-# Run this cell unchanged
-import warnings
-
-# Loop over a range of numbers between 1000 10,000
-for i in range(1000, 10000, 500):
-    # Catch the ConvergenceWarning
-    with warnings.catch_warnings():
-        # If a warning is produced, throw an error instead
-        warnings.filterwarnings('error')
-        # Place the model fit inside a try except block to catch the error
-        try:
-            model = SGDRegressor(max_iter=i, random_state=2021)
-            model.fit(X_train, y_train)
-            # If the model fits without a ConvergenceWarning stop the for loop
-            break
-        except Warning:
-            # If the model returns a ConvergenceWarning, move to the next iteration.
-            continue
-            
-# Print the number of iterations that allowed the model to converge
-print('Max iterations needed for convergence:', i)
-```
-
-    Max iterations needed for convergence: 6500
-
-
-## 6. What is the default setting for alpha? - Multi choice
+## 6. What is the default setting for alpha (learning rate) for the `SGDRegressor`? - Multi choice
 
 
 ```python
 # Run this cell unchanged
 question_6.display()
 ```
-
-
-    VBox(children=(Output(layout=Layout(bottom='5px', width='auto')), RadioButtons(layout=Layout(flex_flow='column…
-
-
-
-```python
-#__SOLUTION__
-# Run this cell unchanged
-question_6.display()
-```
-
-
-    VBox(children=(Output(layout=Layout(bottom='5px', width='auto')), RadioButtons(layout=Layout(flex_flow='column…
-
 
 ## 7. Update the alpha to .01 and set the max_iter to 1500
 
@@ -195,20 +154,6 @@ question_6.display()
 ```python
 # Your code here
 ```
-
-
-```python
-#__SOLUTION__
-model = SGDRegressor(max_iter=1500, alpha=0.01, random_state=2021)
-model.fit(X, y)
-```
-
-
-
-
-    SGDRegressor(alpha=0.01, max_iter=1500, random_state=2021)
-
-
 
 ## 8. The model converged - True or False
 
@@ -218,21 +163,6 @@ model.fit(X, y)
 question_8.display()
 ```
 
-
-    VBox(children=(Output(layout=Layout(bottom='5px', width='auto')), RadioButtons(layout=Layout(flex_flow='column…
-
-
-
-```python
-#__SOLUTION__
-# Run this cell unchanged
-question_8.display()
-```
-
-
-    VBox(children=(Output(layout=Layout(bottom='5px', width='auto')), RadioButtons(layout=Layout(flex_flow='column…
-
-
 ## 9. Select the answer that best describes how alpha impacts a model's fit
 
 
@@ -241,22 +171,7 @@ question_8.display()
 question_9.display()
 ```
 
-
-    VBox(children=(Output(layout=Layout(bottom='5px', width='auto')), RadioButtons(layout=Layout(flex_flow='column…
-
-
-
-```python
-#__SOLUTION__
-# Run this cell unchanged
-question_9.display()
-```
-
-
-    VBox(children=(Output(layout=Layout(bottom='5px', width='auto')), RadioButtons(layout=Layout(flex_flow='column…
-
-
-# Linear Algebra Practice
+# Linear Algebra 
 
 ## 10. When finding the dot product for two vectors, the length of the vectors must be the same.
 
@@ -265,21 +180,6 @@ question_9.display()
 # Run this cell unchanged
 question_10.display()
 ```
-
-
-    VBox(children=(Output(layout=Layout(bottom='5px', width='auto')), RadioButtons(layout=Layout(flex_flow='column…
-
-
-
-```python
-#__SOLUTION__
-# Run this cell unchanged
-question_10.display()
-```
-
-
-    VBox(children=(Output(layout=Layout(bottom='5px', width='auto')), RadioButtons(layout=Layout(flex_flow='column…
-
 
 ## 11. Please select the solution for the dot product of the following vectors.
 
@@ -294,21 +194,6 @@ $vector_2= \begin{bmatrix} -4&82\\ \end{bmatrix}$
 question_11.display()
 ```
 
-
-    VBox(children=(Output(layout=Layout(bottom='5px', width='auto')), RadioButtons(layout=Layout(flex_flow='column…
-
-
-
-```python
-#__SOLUTION__
-# Run this cell unchanged
-question_11.display()
-```
-
-
-    VBox(children=(Output(layout=Layout(bottom='5px', width='auto')), RadioButtons(layout=Layout(flex_flow='column…
-
-
 ## 12. How do you turn a list into a numpy array?
 
 
@@ -317,10 +202,6 @@ question_11.display()
 
 question_12.display()
 ```
-
-
-    VBox(children=(Output(layout=Layout(bottom='5px', width='auto')), RadioButtons(layout=Layout(flex_flow='column…
-
 
 ## 13. Please find the dot product of the following vectors
 
@@ -350,23 +231,3 @@ vector_2 = [
 ```python
 # Your code here
 ```
-
-
-```python
-#__SOLUTION__
-vector_1 = np.array(vector_1)
-vector_2 = np.array(vector_2)
-
-np.dot(vector_1.T, vector_2)
-```
-
-
-
-
-    array([[-3.31869275],
-           [-7.80043543],
-           [-9.35675419],
-           [-0.13185929],
-           [ 1.207176  ]])
-
-

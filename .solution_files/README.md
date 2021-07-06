@@ -58,7 +58,6 @@ In the cell below, please create a train test split for this dataset, setting `t
 
 
 ```python
-#==SOLUTION== 
 X = df.drop('target', axis = 1)
 y = df.target
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=2021)
@@ -76,7 +75,6 @@ Now, initialize an `SGDRegressor` model.
 
 
 ```python
-#==SOLUTION== 
 model = SGDRegressor(random_state=2021)
 ```
 
@@ -91,7 +89,6 @@ In the cell below, fit the model to the training data.
 
 
 ```python
-#==SOLUTION== 
 model.fit(X_train, y_train)
 ```
 
@@ -126,7 +123,6 @@ In the cell below, initialize a new `SGDRegessor` model with `max_iter` set to 1
 
 
 ```python
-#==SOLUTION== 
 model = SGDRegressor(max_iter=10000, random_state=2021)
 model.fit(X_train, y_train)
 ```
@@ -167,7 +163,6 @@ print('Max iterations needed for convergence:', i)
 
 
 ```python
-#==SOLUTION== 
 # Run this cell unchanged
 import warnings
 
@@ -203,7 +198,6 @@ question_6.display()
 
 
 ```python
-#==SOLUTION== 
 # Run this cell unchanged
 question_6.display()
 ```
@@ -217,7 +211,6 @@ question_6.display()
 
 
 ```python
-#==SOLUTION== 
 model = SGDRegressor(max_iter=1500, alpha=0.01, random_state=2021)
 model.fit(X, y)
 ```
@@ -232,7 +225,6 @@ question_8.display()
 
 
 ```python
-#==SOLUTION== 
 # Run this cell unchanged
 question_8.display()
 ```
@@ -247,7 +239,6 @@ question_9.display()
 
 
 ```python
-#==SOLUTION== 
 # Run this cell unchanged
 question_9.display()
 ```
@@ -264,7 +255,6 @@ question_10.display()
 
 
 ```python
-#==SOLUTION== 
 # Run this cell unchanged
 question_10.display()
 ```
@@ -284,7 +274,6 @@ question_11.display()
 
 
 ```python
-#==SOLUTION== 
 # Run this cell unchanged
 question_11.display()
 ```
@@ -329,7 +318,6 @@ vector_2 = [
 
 
 ```python
-#==SOLUTION== 
 vector_1 = np.array(vector_1)
 vector_2 = np.array(vector_2)
 
